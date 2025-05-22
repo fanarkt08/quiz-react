@@ -5,8 +5,11 @@ import { QuizContext } from '../context/QuizContext';
 function QuestionItem({ question, eventKey }) {
   const { dispatch } = useContext(QuizContext);
 
-  const handleAnswer = (answer) => {
-    dispatch({ type: 'Answer', payload: { id: question.id, answer } });
+  const handleAnswer = (isCorrect) => {
+    dispatch({
+      type: 'Answer',
+      payload: { id: question.id, isCorrect }
+    });
   };
 
   return (
@@ -25,12 +28,21 @@ function QuestionItem({ question, eventKey }) {
       </Accordion.Header>
       <Accordion.Body>
         <p>{question.answer}</p>
-        {question.validation === null && (
-          <>
-            <Button variant="success" onClick={() => handleAnswer(true)} className="me-2">Juste</Button>
-            <Button variant="danger" onClick={() => handleAnswer(false)}>Faux</Button>
-          </>
-        )}
+        <Button
+            variant="success"
+            onClick={() => handleAnswer(true)}
+            className="me-2"
+            disabled={question.validation !== null}
+        >
+        Juste
+        </Button>
+        <Button
+            variant="danger"
+            onClick={() => handleAnswer(false)}
+            disabled={question.validation !== null}
+        >
+        Faux
+        </Button>
       </Accordion.Body>
     </Accordion.Item>
   );

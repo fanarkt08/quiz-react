@@ -1,31 +1,14 @@
 import React, { createContext, useReducer } from 'react';
 import rawData from '../data/questions.json';
+import { quizReducer, initialState } from '../reducers/QuizReducer';
 
 export const QuizContext = createContext();
 
-const initialState = {
-  questions: rawData.map(q => ({ ...q }))
-};
-
-function quizReducer(state, action) {
-  switch (action.type) {
-    case 'Answer': {
-      const { id, isCorrect } = action.payload;
-      return {
-        questions: state.questions.map(q =>
-          q.id === id && q.validation === null
-            ? { ...q, validation: isCorrect }
-            : q
-        )
-      };
-    }
-    default:
-      return state;
-  }
-}
-
 export function QuizProvider({ children }) {
-  const [state, dispatch] = useReducer(quizReducer, initialState);
+  const [state, dispatch] = useReducer(quizReducer, {
+    ...initialState,
+    questions: rawData.map(q => ({ ...q }))
+  });
 
   return (
     <QuizContext.Provider value={{ state, dispatch }}>
